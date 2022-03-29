@@ -10,16 +10,13 @@ import java.net.Socket;
 public class Server {
 
     public static void main(String[] args) {
-        ServerSocket serverSocket; // порт можете выбрать любой в доступном диапазоне 0-65536. Но чтобы не нарваться на уже занятый - рекомендуем использовать около 8080
-        PrintWriter out = null;
-        BufferedReader in = null;
-        Socket clientSocket = null;
+
         String answer;
-        try {
-            serverSocket = new ServerSocket(8080);
-            clientSocket = serverSocket.accept(); // ждем подключения
-            out = new PrintWriter(clientSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+        try (ServerSocket serverSocket = new ServerSocket(8080);
+             Socket clientSocket = serverSocket.accept();
+             PrintWriter out =new PrintWriter(clientSocket.getOutputStream(),true);
+             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
 
             System.out.println("New connection accepted");
             final String name = in.readLine();
@@ -47,9 +44,8 @@ public class Server {
                 answer = in.readLine();
 
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException err){
+            err.printStackTrace();
         }
     }
 }
